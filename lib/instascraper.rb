@@ -118,7 +118,8 @@ module Instascraper
   def self.iterate_through_most_recent_posts(num_posts)
     num_posts = num_posts || 100
     i = 0
-    all("article ._8fxp6 div div a").each do |post|
+    all_posts = all("article div")[1] #most recent post section. [0] is most popular.
+    all_posts.find_all("div div a").each do |post|
       break if i >= num_posts
       link = post["href"]
       image = post.find("img")["src"]
