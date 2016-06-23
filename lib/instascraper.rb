@@ -4,14 +4,10 @@ module Instascraper
   extend Capybara::DSL
 
   #get location posts
-  def self.location_post(location_id, initial_scrape=false)
+  def self.location_posts(location_id, num_posts=nil)
     visit "https://www.instagram.com/explore/locations/#{location_id}/"
     @posts = []
-    if not initial_scrape
-      scrape_location_posts
-    else
-      scrape_location_posts(0)
-    end
+    scrape_location_posts(num_posts)
   end
 
   #get a hashtag
@@ -119,12 +115,16 @@ module Instascraper
   end
 
   #post iteration through most receent posts exclusively
-  def self.iterate_through_most_recent_posts  
+  def self.iterate_through_most_recent_posts(num_posts)
+    num_posts = num_posts || 100
+    i = 0
     all("article ._8fxp6 div div a").each do |post|
+      break if i >= num_posts
       link = post["href"]
       image = post.find("img")["src"]
       info = Instascraper::InstagramPost.new(link, image)
       @posts << info
+      i += 1
     end
 
     #log
@@ -151,9 +151,17 @@ module Instascraper
   end
 
   #scrape location posts
-  def self.scrape_location_posts(max_iteration=10)
-    begin
-      page.find('a', :text => "Load more", exact: true).click
+  def self.scrape_location_posts(num_posts)
+    begin      
+      if num_posts == nil
+        max_iteration = 10
+        page.find('a', :text => "Load more", exact: true).click      
+      else
+        max_iteration = num_posts/12
+        if max_iteration > 0
+          page.find('a', :text => "Load more", exact: true).click      
+        end
+      end
       iteration = 0
       while iteration < max_iteration do
         iteration += 1
@@ -162,10 +170,10 @@ module Instascraper
         page.execute_script "window.scrollTo(0,(document.body.scrollHeight - 5000));"
         sleep 0.1
       end
-      iterate_through_most_recent_posts
+      iterate_through_most_recent_posts(num_posts)
     rescue Capybara::ElementNotFound => e
       begin
-        iterate_through_most_recent_posts
+        iterate_through_most_recent_posts(num_posts)
       end
     end
   end
