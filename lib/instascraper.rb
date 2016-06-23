@@ -101,8 +101,13 @@ module Instascraper
     @user_profile_image = page.find('article header a img')["src"]    
     @timestamp = page.find('article div section a time')["datetime"]
     @image = page.find('article div div div img')["src"]
-    comment_html = page.find('article div ul li h1 span') rescue ""
-    @comment = comment_html.text
+    comment_html = page.find('article div ul li h1 span') rescue nil
+    if comment_html == nil
+      @comment = ""
+    else
+      @comment = comment_html.text
+    end
+
     begin
       all("article div ul li h1 span a").each do |hashtag|
         @hashtags << hashtag.text
