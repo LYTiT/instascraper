@@ -18,12 +18,18 @@ describe Instascraper do
   end
 
   it 'connects to instagram\'s Washington Square Park location, scrapes, and maps posts' do
-    scrape_result = Instascraper.location_post(108472159177508)
+    scrape_result = Instascraper.location_post(108472159177508, true)
     scrape_result.each do |post|
       "Link: #{post.link}\nImage: #{post.image}\n"
     end
+
     expect(scrape_result[0].link).to_not eq(nil)
-    expect(scrape_result[0].image).to_not eq(nil)  
+    expect(scrape_result[0].image).to_not eq(nil)
+    #expect(scrape_result[0].username).to_not eq(nil)
+    #expect(scrape_result[0].user_profile_image).to_not eq(nil)
+    #expect(scrape_result[0].timestamp).to_not eq(nil)
+    #expect(scrape_result[0].comment).to_not eq(nil)
+    #expect(scrape_result[0].hashtags.count).to_not eq(nil)    
   end
 
   it 'connects to instagram\'s #test hashtag, scrapes, and maps posts' do

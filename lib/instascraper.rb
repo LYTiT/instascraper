@@ -86,7 +86,7 @@ module Instascraper
   #get post details
   def self.full_post(link)    
     @hashtags = []
-    scrape_post(link)
+    complete_post_scrape(link)
     @post = Instascraper::InstagramPost.new(link, @image, @username, @user_profile_image, @timestamp, @comment, @hashtags)
   	return @post
   end
@@ -94,14 +94,29 @@ module Instascraper
   
   private
 
+  #scrape post details
+  def self.complete_post_scrape(link)
+    visit link
+    @username = page.find('article header div a', match: :first)["title"]
+    @user_profile_image = page.find('article header a img')["src"]    
+    @timestamp = page.find('article div section a time')["datetime"]
+    @image = page.find('article div div div img')["src"]
+    comment_html = page.find('article div ul li h1 span')
+    @comment = comment_html.text
+
+    all("article div ul li h1 span a").each do |hashtag|
+      @hashtags << hashtag.text
+    end
+    
+  end
+
   #post iteration through most receent posts exclusively
-  def self.iterate_through_most_recent_posts
-    most_recent_id = "._8fxp6"
-    all("article #{most_recent_id} div div a").each do |post|
+  def self.iterate_through_most_recent_posts  
+    all("article ._8fxp6 div div a").each do |post|
       link = post["href"]
-      #image = post.find("img")["src"]
-      #info = Instascraper::InstagramPost.new(link, image)
-      @posts << self.full_post(link)
+      image = post.find("img")["src"]
+      info = Instascraper::InstagramPost.new(link, image)
+      @posts << info
     end
 
     #log
@@ -127,22 +142,6 @@ module Instascraper
     return @posts
   end
 
-  #scrape post details
-  def self.scrape_post(link)
-    visit link
-    @username = page.find('article header div a', match: :first)["title"]
-    @user_profile_image = page.find('article header a img')["src"]    
-    @timestamp = page.find('article div section a time')["datetime"]
-    @image = page.find('article div div div img')["src"]
-    comment_html = page.find('article div ul li h1 span')
-    @comment = comment_html.text
-
-    all("article div ul li h1 span a").each do |hashtag|
-      @hashtags << hashtag.text
-    end
-    
-  end
-
   #scrape location posts
   def self.scrape_location_posts(max_iteration=10)
     begin
@@ -155,10 +154,10 @@ module Instascraper
         page.execute_script "window.scrollTo(0,(document.body.scrollHeight - 5000));"
         sleep 0.1
       end
-      iterate_through_posts
+      iterate_through_most_recent_posts
     rescue Capybara::ElementNotFound => e
       begin
-        iterate_through_posts
+        iterate_through_most_recent_posts
       end
     end
   end
