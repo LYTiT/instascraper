@@ -84,21 +84,24 @@ module Instascraper
   end
 
   #get post details
-  def self.post(post_reference)    
+  def self.full_post(link)    
     @hashtags = []
-    scrape_post(post_reference)
-    @post = Instascraper::InstagramPost.new(post_reference, @image, @username, @user_profile_image, @timestamp, @comment, @hashtags)
+    scrape_post(link)
+    @post = Instascraper::InstagramPost.new(link, @image, @username, @user_profile_image, @timestamp, @comment, @hashtags)
+  	return @post
   end
 
+  
   private
+
   #post iteration through most receent posts exclusively
   def self.iterate_through_most_recent_posts
     most_recent_id = "._8fxp6"
     all("article #{most_recent_id} div div a").each do |post|
       link = post["href"]
-      image = post.find("img")["src"]
-      info = Instascraper::InstagramPost.new(link, image)
-      @posts << info
+      #image = post.find("img")["src"]
+      #info = Instascraper::InstagramPost.new(link, image)
+      @posts << self.full_post(link)
     end
 
     #log
@@ -125,9 +128,9 @@ module Instascraper
   end
 
   #scrape post details
-  def self.scrape_post(post_reference)
-    visit "https://www.instagram.com/p/#{post_reference}/"
-    @username = page.find("article header div a", match: :first)["title"]
+  def self.scrape_post(link)
+    visit link
+    @username = page.find('article header div a', match: :first)["title"]
     @user_profile_image = page.find('article header a img')["src"]    
     @timestamp = page.find('article div section a time')["datetime"]
     @image = page.find('article div div div img')["src"]
@@ -140,40 +143,22 @@ module Instascraper
     
   end
 
-  #user info scraper method
-  def self.scrape_user_info(username)
-    visit "https://www.instagram.com/#{username}/"
-    @image = page.find('article header div img')["src"]
-    within("header") do
-      post_count_html = page.find('span', :text => "posts", exact: true)['innerHTML']
-      @post_count = get_span_value(post_count_html)
-      follower_count_html = page.find('span', :text => "followers", exact: true)['innerHTML']
-      @follower_count = get_span_value(follower_count_html)
-      following_count_html = page.find('span', :text => "following", exact: true)['innerHTML']
-      @following_count = get_span_value(following_count_html)
-      description = page.find('h2').first(:xpath,".//..")['innerHTML']
-      @description = Nokogiri::HTML(description).text
-    end
-  end
-
   #scrape location posts
   def self.scrape_location_posts(max_iteration=10)
     begin
-      if max_iteration > 1
-        page.find('a', :text => "Load more", exact: true).click
-        iteration = 0
-        while iteration < max_iteration do
-          iteration += 1
-          page.execute_script "window.scrollTo(0,document.body.scrollHeight);"
-          sleep 0.1
-          page.execute_script "window.scrollTo(0,(document.body.scrollHeight - 5000));"
-          sleep 0.1
-        end
+      page.find('a', :text => "Load more", exact: true).click
+      iteration = 0
+      while iteration < max_iteration do
+        iteration += 1
+        page.execute_script "window.scrollTo(0,document.body.scrollHeight);"
+        sleep 0.1
+        page.execute_script "window.scrollTo(0,(document.body.scrollHeight - 5000));"
+        sleep 0.1
       end
-      iterate_through_most_recent_posts
+      iterate_through_posts
     rescue Capybara::ElementNotFound => e
       begin
-        iterate_through_most_recent_posts
+        iterate_through_posts
       end
     end
   end
@@ -221,6 +206,22 @@ module Instascraper
       begin
         iterate_through_posts
       end
+    end
+  end
+
+  #user info scraper method
+  def self.scrape_user_info(username)
+    visit "https://www.instagram.com/#{username}/"
+    @image = page.find('article header div img')["src"]
+    within("header") do
+      post_count_html = page.find('span', :text => "posts", exact: true)['innerHTML']
+      @post_count = get_span_value(post_count_html)
+      follower_count_html = page.find('span', :text => "followers", exact: true)['innerHTML']
+      @follower_count = get_span_value(follower_count_html)
+      following_count_html = page.find('span', :text => "following", exact: true)['innerHTML']
+      @following_count = get_span_value(following_count_html)
+      description = page.find('h2').first(:xpath,".//..")['innerHTML']
+      @description = Nokogiri::HTML(description).text
     end
   end
 

@@ -7,14 +7,14 @@ describe Instascraper do
   end
 
   it 'connects to and scrapes an instagram post' do
-    scrape_result = Instascraper.post("BG8gRobt630")
+    scrape_result = Instascraper.full_post("https://www.instagram.com/p/BG_IIaoAWdp/")
     expect(scrape_result.link).to_not eq(nil)
     expect(scrape_result.image).to_not eq(nil)
     expect(scrape_result.username).to_not eq(nil)
     expect(scrape_result.user_profile_image).to_not eq(nil)
     expect(scrape_result.timestamp).to_not eq(nil)
     expect(scrape_result.comment).to_not eq(nil)
-    expect(scrape_result.hashtags.count).to_not eq(0)
+    expect(scrape_result.hashtags.count).to_not eq(nil)
   end
 
   it 'connects to instagram\'s Washington Square Park location, scrapes, and maps posts' do
