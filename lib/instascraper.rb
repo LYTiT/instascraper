@@ -120,7 +120,7 @@ module Instascraper
     i = 0
     #all_posts = find("article div")[1] #most recent post section. [0] is most popular.
     find_all("article h2+div div div a").each do |post|
-      break if i > num_posts
+      break if i >= num_posts
       link = post["href"]
       image = post.find("img")["src"]
       info = Instascraper::InstagramPost.new(link, image)
