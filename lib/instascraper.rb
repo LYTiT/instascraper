@@ -123,7 +123,9 @@ module Instascraper
     #all_posts = find("article div")[1] #most recent post section. [0] is most popular.
     find_all("article h2+div div div a").each do |post|
       if (@last_post_reference != nil && @last_post_reference != post["href"]) or (@last_post_reference == nil)
+        p "Before break"
         break if i >= num_posts
+        p "Made it past break"
         link = post["href"]
         image = post.find("img")["src"]
         video = post.find("video")["src"] rescue nil
@@ -168,9 +170,9 @@ module Instascraper
       else
         max_iteration = num_posts/12
         page.find('a', :text => "Load more", exact: true).click
-        #if max_iteration > 0
-        #  page.find('a', :text => "Load more", exact: true).click
-        #end
+        if max_iteration > 0
+          page.find('a', :text => "Load more", exact: true).click
+        end
       end
       iteration = 0
       while iteration < max_iteration do
