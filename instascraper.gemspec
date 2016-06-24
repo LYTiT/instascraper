@@ -30,4 +30,10 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.10"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec"
+
+  
+
+  spec.add_runtime_dependency "capybara", "~> 2.7.1", ">= 2.7.1"
+  spec.add_runtime_dependency "phantomjs", "~> 2.1.1.0", ">= 2.1.1.0"
+  spec.add_runtime_dependency "poltergeist", "~> 1.9.0", ">= 1.9.0"
 end
