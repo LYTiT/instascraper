@@ -9,7 +9,7 @@ module Instascraper
     @num_posts = num_posts
     @posts = []
     @latest_post_reference = latest_post_reference
-    scrape_location_posts(num_posts)
+    scrape_location_posts
   end
 
   #get a hashtag
