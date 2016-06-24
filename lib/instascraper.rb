@@ -5,7 +5,7 @@ module Instascraper
 
   #get location posts
   def self.location_posts(location_id, num_posts=nil, latest_post_reference=nil)
-    visit "http://www.instagram.com/explore/locations/#{location_id}/"
+    visit "https://www.instagram.com/explore/locations/#{location_id}/"
     @num_posts = num_posts
     @posts = []
     @latest_post_reference = latest_post_reference
