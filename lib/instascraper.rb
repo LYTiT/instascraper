@@ -120,9 +120,12 @@ module Instascraper
   def self.iterate_through_most_recent_posts(num_posts)
     num_posts = num_posts || 100
     i = 0
-    #all_posts = find("article div")[1] #most recent post section. [0] is most popular.
+
+    p "BEFORE find_all"
     all("article h2+div div div a").each do |post|
+      p "INSIDE find_all"
       if (@last_post_reference != nil && @last_post_reference != post["href"]) or (@last_post_reference == nil)
+        p "PASSED the dupe check."
         break if i >= num_posts
         link = post["href"]
         image = post.find("img")["src"]
