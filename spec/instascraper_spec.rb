@@ -7,9 +7,10 @@ describe Instascraper do
   end
 
   it 'connects to and scrapes an instagram post' do
-    scrape_result = Instascraper.full_post("https://www.instagram.com/p/BG_IIaoAWdp/")
+    scrape_result = Instascraper.full_post("https://www.instagram.com/p/BG2bSCwywJR/?taken-by=edogelardin")
     expect(scrape_result.link).to_not eq(nil)
     expect(scrape_result.image).to_not eq(nil)
+    expect(scrape_result.video).to_not eq(nil)
     expect(scrape_result.username).to_not eq(nil)
     expect(scrape_result.user_profile_image).to_not eq(nil)
     expect(scrape_result.timestamp).to_not eq(nil)

@@ -84,7 +84,7 @@ module Instascraper
   def self.full_post(link)    
     @hashtags = []
     complete_post_scrape(link)
-    @post = Instascraper::InstagramPost.new(link, @image, @username, @user_profile_image, @timestamp, @comment, @hashtags)
+    @post = Instascraper::InstagramPost.new(link, @image, @video, @username, @user_profile_image, @timestamp, @comment, @hashtags)
   	return @post
   end
 
@@ -98,6 +98,7 @@ module Instascraper
     @user_profile_image = page.find('article header a img')["src"]    
     @timestamp = page.find('article div section a time')["datetime"]
     @image = page.find('article div div div img')["src"]
+    @video = page.find("video")["src"] rescue nil
     comment_html = page.find('article div ul li h1 span') rescue nil
     if comment_html == nil
       @comment = ""
@@ -125,7 +126,8 @@ module Instascraper
         break if i >= num_posts
         link = post["href"]
         image = post.find("img")["src"]
-        info = Instascraper::InstagramPost.new(link, image)
+        video = post.find("video")["src"] rescue nil
+        info = Instascraper::InstagramPost.new(link, image, video)
         @posts << info
         i += 1
       else
