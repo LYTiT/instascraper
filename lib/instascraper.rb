@@ -121,11 +121,10 @@ module Instascraper
     num_posts = num_posts || 100
     i = 0
     #all_posts = find("article div")[1] #most recent post section. [0] is most popular.
-    find_all("article h2+div div div a").each do |post|
+    p "Before search!"
+    find_all("article div div div a").each do |post|
       if (@last_post_reference != nil && @last_post_reference != post["href"]) or (@last_post_reference == nil)
-        p "Before break"
         break if i >= num_posts
-        p "Made it past break"
         link = post["href"]
         image = post.find("img")["src"]
         video = post.find("video")["src"] rescue nil
