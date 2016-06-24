@@ -4,10 +4,10 @@ module Instascraper
   extend Capybara::DSL
 
   #get location posts
-  def self.location_posts(location_id, num_posts=nil, last_post_reference=nil)
+  def self.location_posts(location_id, num_posts=nil, latest_post_reference=nil)
     visit "https://www.instagram.com/explore/locations/#{location_id}/"
     @posts = []
-    @last_post_reference = last_post_reference
+    @latest_post_reference = latest_post_reference
     scrape_location_posts(num_posts)
   end
 
