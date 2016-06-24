@@ -9,8 +9,7 @@ module Instascraper
     @num_posts = num_posts
     @posts = []
     @latest_post_reference = latest_post_reference
-    scrape_posts
-    #scrape_location_posts#(num_posts)
+    scrape_location_posts(num_posts)
   end
 
   #get a hashtag
@@ -124,7 +123,7 @@ module Instascraper
     i = 0
 
     p "BEFORE find_all"
-    all("article h2+div div div a").each do |post|
+    all("main article h2+div div div a").each do |post|
       p "INSIDE find_all"
       if (@last_post_reference != nil && @last_post_reference != post["href"]) or (@last_post_reference == nil)
         p "PASSED the dupe check."
@@ -167,8 +166,16 @@ module Instascraper
   #scrape location posts
   def self.scrape_location_posts
     begin      
-      page.find('a', :text => "Load more", exact: true).click
-      max_iteration = 10
+      if @num_posts == nil
+        max_iteration = 10
+        page.find('a', :text => "Load more", exact: true).click      
+      else
+        max_iteration = @num_posts/12
+        page.find('a', :text => "Load more", exact: true).click
+        if max_iteration > 0
+          page.find('a', :text => "Load more", exact: true).click
+        end
+      end
       iteration = 0
       while iteration < max_iteration do
         iteration += 1
@@ -177,10 +184,10 @@ module Instascraper
         page.execute_script "window.scrollTo(0,(document.body.scrollHeight - 5000));"
         sleep 0.1
       end
-      iterate_through_posts
+      iterate_through_most_recent_posts
     rescue Capybara::ElementNotFound => e
       begin
-        iterate_through_posts
+        iterate_through_most_recent_posts
       end
     end
   end
