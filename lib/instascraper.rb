@@ -131,6 +131,7 @@ module Instascraper
         @posts << info
         i += 1
       else
+        p "Preventing dupe creation."
         break
       end
     end
@@ -166,9 +167,10 @@ module Instascraper
         page.find('a', :text => "Load more", exact: true).click      
       else
         max_iteration = num_posts/12
-        if max_iteration > 0
-          page.find('a', :text => "Load more", exact: true).click      
-        end
+        page.find('a', :text => "Load more", exact: true).click
+        #if max_iteration > 0
+        #  page.find('a', :text => "Load more", exact: true).click
+        #end
       end
       iteration = 0
       while iteration < max_iteration do
