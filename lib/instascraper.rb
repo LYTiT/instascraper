@@ -122,7 +122,7 @@ module Instascraper
     i = 0
 
     p "BEFORE find_all"
-    all("article div div div a").each do |post|
+    all("article h2+div div div a").each do |post|
       p "INSIDE find_all"
       if (@last_post_reference != nil && @last_post_reference != post["href"]) or (@last_post_reference == nil)
         p "PASSED the dupe check."
@@ -183,10 +183,10 @@ module Instascraper
         page.execute_script "window.scrollTo(0,(document.body.scrollHeight - 5000));"
         sleep 0.1
       end
-      iterate_through_most_recent_posts(num_posts)
+      iterate_through_posts
     rescue Capybara::ElementNotFound => e
       begin
-        iterate_through_most_recent_posts(num_posts)
+        iterate_through_posts
       end
     end
   end
