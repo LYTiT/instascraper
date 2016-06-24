@@ -121,8 +121,7 @@ module Instascraper
     num_posts = num_posts || 100
     i = 0
     #all_posts = find("article div")[1] #most recent post section. [0] is most popular.
-    p "Before search!"
-    find_all("article div div div a").each do |post|
+    all("article h2+div div div a").each do |post|
       if (@last_post_reference != nil && @last_post_reference != post["href"]) or (@last_post_reference == nil)
         break if i >= num_posts
         link = post["href"]
