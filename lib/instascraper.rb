@@ -98,7 +98,10 @@ module Instascraper
     @user_profile_image = page.find('article header a img')["src"]    
     @timestamp = page.find('article div section a time')["datetime"]
     @image = page.find('article div div div img')["src"]
-    @video = page.find("video")["src"] rescue nil
+    video_html = page.find("video")
+    if video_html != nil
+      @video = page.find("video")["src"]
+    end
     comment_html = page.find('article div ul li h1 span') rescue nil
     if comment_html == nil
       @comment = ""
