@@ -14,8 +14,7 @@ module Instascraper
 
   #get a hashtag
   def self.hashtag(hashtag)
-    #visit "https://www.instagram.com/explore/tags/#{hashtag}/"
-    visit "https://www.instagram.com/explore/locations/#{hashtag}/"
+    visit "https://www.instagram.com/explore/tags/#{hashtag}/"
     @posts = []
     scrape_posts
   end
