@@ -123,7 +123,9 @@ module Instascraper
     i = 0
 
     p "BEFORE find_all"
-    all("html body span section main article h2+div div div a").each do |post|
+    find("article h2+div div div a")
+    p "passed single"
+    all("article h2+div div div a").each do |post|
       p "INSIDE find_all"
       if (@last_post_reference != nil && @last_post_reference != post["href"]) or (@last_post_reference == nil)
         p "PASSED the dupe check."
