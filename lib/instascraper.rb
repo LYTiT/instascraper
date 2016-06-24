@@ -6,6 +6,7 @@ module Instascraper
   #get location posts
   def self.location_posts(location_id, num_posts=nil, latest_post_reference=nil)
     visit "https://www.instagram.com/explore/locations/#{location_id}/"
+    @num_posts = num_posts
     @posts = []
     @latest_post_reference = latest_post_reference
     scrape_location_posts(num_posts)
@@ -117,8 +118,8 @@ module Instascraper
   end
 
   #post iteration through most receent posts exclusively
-  def self.iterate_through_most_recent_posts(num_posts)
-    num_posts = num_posts || 100
+  def self.iterate_through_most_recent_posts
+    num_posts = @num_posts || 100
     i = 0
 
     p "BEFORE find_all"
@@ -163,18 +164,10 @@ module Instascraper
   end
 
   #scrape location posts
-  def self.scrape_location_posts(num_posts)
+  def self.scrape_location_posts
     begin      
-      if num_posts == nil
-        max_iteration = 10
-        page.find('a', :text => "Load more", exact: true).click      
-      else
-        max_iteration = num_posts/12
-        page.find('a', :text => "Load more", exact: true).click
-        if max_iteration > 0
-          page.find('a', :text => "Load more", exact: true).click
-        end
-      end
+      page.find('a', :text => "Load more", exact: true).click
+      max_iteration = 10
       iteration = 0
       while iteration < max_iteration do
         iteration += 1
