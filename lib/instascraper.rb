@@ -5,7 +5,7 @@ module Instascraper
 
   #get location posts
   def self.location_posts(location_id, num_posts=nil, latest_post_reference=nil)
-    visit "https://www.instagram.com/explore/locations/#{location_id}/"
+    page.visit "https://www.instagram.com/explore/locations/#{location_id}/"
     @num_posts = num_posts
     @posts = []
     @latest_post_reference = latest_post_reference
@@ -122,11 +122,7 @@ module Instascraper
     num_posts = @num_posts || 100
     i = 0
 
-    p "BEFORE find_all"
-    p all("article").count
-    p "printed article sections count"
     all("article h2+div div div a").each do |post|
-      p "INSIDE find_all"
       if (@last_post_reference != nil && @last_post_reference != post["href"]) or (@last_post_reference == nil)
         p "PASSED the dupe check."
         break if i >= num_posts
