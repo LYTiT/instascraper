@@ -2,11 +2,22 @@ require 'spec_helper'
 
 describe Instascraper do
 
+  it 'connects to http redirecter and scapes instagram location page' do
+    scrape_result = Instascraper.dirty_location_posts_2(108472159177508, 5, nil)
+    scrape_result.each do |post|
+      "Link: #{post.link}\nImage: #{post.image}\n"
+    end
+
+    expect(scrape_result[0].link).to_not eq(nil)
+    expect(scrape_result[0].image).to_not eq(nil)  
+  end
+
+=begin
   it 'connects to http rerouter and scrapes posts' do
     scrape_result = Instascraper.dirty_location_posts(108472159177508)
     expect(scrape_result.length).to_not eq(0)
   end
-=begin
+
   it 'has a version number' do
     expect(Instascraper::VERSION).not_to be nil
   end

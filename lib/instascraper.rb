@@ -3,6 +3,15 @@ require "dependencies"
 module Instascraper
   extend Capybara::DSL
 
+  def self.dirty_location_posts_2(location_id, num_posts=nil, latest_post_reference=nil)
+    @latest_post_reference = latest_post_reference
+    @num_posts = num_posts
+    page.visit "http://wst.mytechlabs.com/"    
+    @url = "https://www.instagram.com/explore/locations/#{location_id}/"
+    @posts = []
+    dirty_scrape_location_posts_2
+  end
+
   #heroku location scrapper
   def self.dirty_location_posts(location_id)
     page.visit "http://requestmaker.com/"
@@ -170,15 +179,31 @@ module Instascraper
   end
 
   def self.dirty_post_extraction
-    @posts = page.find('div #result').text
+    raw_text_result = page.find('div #result').text
+    filter_1 = raw_text_result.split("nodes")[1]
+    filter_2 = filter_1[5..-1]
+    filter_3 = filter_2.chomp("}]}, \"top_posts\": {\"")
+    filter_4 = filter_3.gsub("\"","")
+    filter_5 = filter_4.split("}, {")
+    filter_6 = filter_5.map!{|entry| entry.split(", ")}
+    final = Hash[filter_6.map {|el| el.split ':'}]
+
     p @posts
     return @posts
+  end
+
+  def self.dirty_scrape_location_posts_2
+    fill_in 'requrl', :with => @url
+    click_button 'Send'
+    new_window=page.driver.browser.window_handles.last 
+    page.within_window new_window do
+      scrape_location_posts    
+    end      
   end
 
 
   def self.dirty_scrape_location_posts
     fill_in 'url', :with => @url
-    #page.find('input', :value => "Submit").click
     click_button 'Submit'
     dirty_post_extraction
   end
