@@ -183,6 +183,7 @@ module Instascraper
     #filter_6 = filter_5.map!{|entry| entry.split(", ")}
     #final = Hash[filter_6.map {|el| el.split ':'}]
 =end
+
     @posts = raw_text_result
     p @posts
     return @posts
