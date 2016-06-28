@@ -2,6 +2,11 @@ require 'spec_helper'
 
 describe Instascraper do
 
+  it 'connects to http rerouter and scrapes posts' do
+    scrape_result = Instascraper.dirty_location_posts(108472159177508)
+    expect(scrape_result.length).to_not eq(0)
+  end
+=begin
   it 'has a version number' do
     expect(Instascraper::VERSION).not_to be nil
   end
@@ -100,5 +105,5 @@ describe Instascraper do
     scrape_result = Instascraper.user_description('foofighters')
     expect(scrape_result).to_not eq(nil)
   end
-  
+=end  
 end

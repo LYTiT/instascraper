@@ -3,6 +3,14 @@ require "dependencies"
 module Instascraper
   extend Capybara::DSL
 
+  #heroku location scrapper
+  def self.dirty_location_posts(location_id)
+    page.visit "http://requestmaker.com/"
+    @url = "https://www.instagram.com/explore/locations/#{location_id}/"
+    @posts = []
+    dirty_scrape_location_posts
+  end
+
   #get location posts
   def self.location_posts(location_id, num_posts=nil, latest_post_reference=nil)
     page.visit "https://www.instagram.com/explore/locations/#{location_id}/"
@@ -160,6 +168,21 @@ module Instascraper
     #return result
     return @posts
   end
+
+  def self.dirty_post_extraction
+    @posts = page.find('div #result').text
+    p @posts
+    return @posts
+  end
+
+
+  def self.dirty_scrape_location_posts
+    fill_in 'url', :with => @url
+    #page.find('input', :value => "Submit").click
+    click_button 'Submit'
+    dirty_post_extraction
+  end
+
 
   #scrape location posts
   def self.scrape_location_posts
