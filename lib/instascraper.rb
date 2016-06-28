@@ -169,23 +169,21 @@ module Instascraper
     return @posts
   end
 
+  #returns raw hash instagram objects
   def self.iterate_through_most_recent_dirty_posts_rm
     raw_text_result = page.find('div #result').text
-=begin    
+
     filter_1 = raw_text_result.split("nodes")[1]
     filter_2 = filter_1[5..-1]
     filter_3 = filter_2.chomp("}]}, \"top_posts\": {\"")
-    filter_4 = filter_3.gsub(/"/, /[']/)
-    filter_5
-
+    filter_4 = filter_3.gsub("'", "").gsub(/"/, "'")
+    filter_5 = filter_4.split("}, {")
+    filter_5.map!{|entry| eval("{"+entry+"}")}
     #filter_4 = filter_3.gsub("\"","")
     #filter_5 = filter_4.split("}, {")
     #filter_6 = filter_5.map!{|entry| entry.split(", ")}
     #final = Hash[filter_6.map {|el| el.split ':'}]
-=end
-
-    @posts = raw_text_result
-    p @posts
+    @posts = filter_5
     return @posts
   end
 
