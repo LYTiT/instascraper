@@ -178,7 +178,11 @@ module Instascraper
       filter_3 = filter_2.chomp("}]}, \"top_posts\": {\"")
       filter_4 = filter_3.gsub("'", "").gsub(/"/, "'")
       filter_5 = filter_4.split("}, {")
-      filter_5.map!{|entry| eval("{"+entry+"}")}
+      begin
+        filter_5.map!{|entry| eval("{"+entry+"}")}
+      rescue  SyntaxError => se
+        return []
+      end
       #filter_4 = filter_3.gsub("\"","")
       #filter_5 = filter_4.split("}, {")
       #filter_6 = filter_5.map!{|entry| entry.split(", ")}
